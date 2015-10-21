@@ -21,6 +21,8 @@ package com.gs.plistconv.proc;
 import com.gs.plist4j.primitives.PlistValue;
 import com.gs.plist4j.xml.XmlPlistFile;
 import com.jcabi.aspects.Immutable;
+import com.jcabi.aspects.LogExceptions;
+import com.jcabi.log.Logger;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -30,7 +32,9 @@ import java.io.*;
  */
 @Immutable
 public final class PcPlXml implements PcStream {
+
     @Override
+    @LogExceptions
     public PlistValue act(InputStream stream) throws IOException {
         File tmp = File.createTempFile("pcplxml-", ".plist");
         try {
@@ -39,9 +43,8 @@ public final class PcPlXml implements PcStream {
             }
             return new XmlPlistFile(tmp).read();
         } finally {
-            boolean deleted = tmp.delete();
-            if (!deleted) {
-                //
+            if (!tmp.delete()) {
+                Logger.warn(this, "Failed to delete temporary file");
             }
         }
     }

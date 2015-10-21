@@ -25,12 +25,17 @@ import com.gs.plistconv.gen.GenPlXml;
 import com.gs.plistconv.proc.PcBinary;
 import com.gs.plistconv.proc.PcPlXml;
 import com.gs.plistconv.take.TkConv;
-import org.takes.facets.fallback.FbChain;
+import org.slf4j.LoggerFactory;
 import org.takes.facets.fallback.TkFallback;
+import org.takes.facets.fork.FkMethods;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
 import org.takes.http.Exit;
 import org.takes.http.FtCLI;
+import org.takes.misc.Opt;
+import org.takes.rq.RqHref;
+import org.takes.rs.RsText;
+import org.takes.rs.RsWithStatus;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -41,39 +46,62 @@ import java.util.regex.Pattern;
 public final class App {
 
     public static void main(String[] args) throws IOException {
+        LoggerFactory.getLogger("TEST").debug("YO!");
 
         new FtCLI(
             new TkFork(
-                new FkRegex(
-                    "/convert",
+                new FkMethods(
+                    "POST",
                     new TkFallback(
                         new TkFork(
-                            new FkInp(
-                                Pattern.compile("^bin$"),
-                                new TkFork(
-                                    new FkOut(
-                                        Pattern.compile("^xml$"),
-                                        new TkConv(
-                                            new PcBinary(),
-                                            new GenPlXml()
+                            new FkRegex(
+                                "^/convert",
+                                new TkFallback(
+                                    new TkFork(
+                                        new FkInp(
+                                            Pattern.compile("^bin$"),
+                                            new TkFork(
+                                                new FkOut(
+                                                    Pattern.compile("^xml$"),
+                                                    new TkConv(
+                                                        new PcBinary(),
+                                                        new GenPlXml()
+                                                    )
+                                                )
+                                            )
+                                        ),
+                                        new FkInp(
+                                            Pattern.compile("^xml$"),
+                                            new TkFork(
+                                                new FkOut(
+                                                    Pattern.compile("^bin$"),
+                                                    new TkConv(
+                                                        new PcPlXml(),
+                                                        new GenBinary()
+                                                    )
+                                                )
+                                            )
                                         )
-                                    )
-                                )
-                            ),
-                            new FkInp(
-                                Pattern.compile("^xml$"),
-                                new TkFork(
-                                    new FkOut(
-                                        Pattern.compile("^bin$"),
-                                        new TkConv(
-                                            new PcPlXml(),
-                                            new GenBinary()
+                                    ),
+                                    req1 -> new Opt.Single<>(
+                                        new RsText(
+                                            String.format(
+                                                "err: href=%s",
+                                                new RqHref.Base(req1).href().toString()
+                                            )
                                         )
                                     )
                                 )
                             )
                         ),
-                        new FbChain()
+                        req -> new Opt.Single<>(
+                            new RsWithStatus(
+                                new RsText(
+                                    new RqHref.Base(req).href().path()
+                                ),
+                                500
+                            )
+                        )
                     )
                 )
             ),

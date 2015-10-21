@@ -21,6 +21,8 @@ package com.gs.plistconv.gen;
 import com.gs.plist4j.binary.BinaryPlistFile;
 import com.gs.plist4j.primitives.PlistValue;
 import com.jcabi.aspects.Immutable;
+import com.jcabi.aspects.LogExceptions;
+import com.jcabi.aspects.Loggable;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -30,7 +32,10 @@ import java.io.*;
  */
 @Immutable
 public final class GenBinary implements GenStream {
+
     @Override
+    @LogExceptions
+    @Loggable
     public InputStream act(PlistValue source) throws IOException {
         File tmp = File.createTempFile("genbinary-", ".plist");
         try {
