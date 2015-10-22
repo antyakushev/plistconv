@@ -24,7 +24,7 @@ public class TkConvTest {
     public void actProcessRequestAndGenerateResponse() throws IOException {
         MatcherAssert.assertThat(
             new TkConv(TEST_PROC, TEST_GEN)
-                .act(new RqBytes(new ArrayList<String>(), new byte[]{42})),
+                .act(new RqBytes(new ArrayList<>(), new byte[]{42})),
             RsMatchers.hasEqualsBody(new byte[]{42})
         );
     }

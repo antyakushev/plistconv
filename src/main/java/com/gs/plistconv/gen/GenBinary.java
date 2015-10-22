@@ -23,6 +23,7 @@ import com.gs.plist4j.primitives.PlistValue;
 import com.jcabi.aspects.Immutable;
 import com.jcabi.aspects.LogExceptions;
 import com.jcabi.aspects.Loggable;
+import com.jcabi.log.Logger;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -35,7 +36,6 @@ public final class GenBinary implements GenStream {
 
     @Override
     @LogExceptions
-    @Loggable
     public InputStream act(PlistValue source) throws IOException {
         File tmp = File.createTempFile("genbinary-", ".plist");
         try {
@@ -44,9 +44,8 @@ public final class GenBinary implements GenStream {
                 return new ByteArrayInputStream(IOUtils.toByteArray(is));
             }
         } finally {
-            boolean deleted = tmp.delete();
-            if (!deleted) {
-                //warning or smth
+            if (!tmp.delete()) {
+                Logger.warn(this, "Failed to delete temporary file");
             }
         }
     }
