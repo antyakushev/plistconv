@@ -16,38 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.gs.plistconv.gen;
+package com.gs.plistconv.err;
 
-import com.gs.plist4j.PlistException;
-import com.gs.plist4j.binary.BinaryPlistFile;
-import com.gs.plist4j.primitives.PlistValue;
 import com.jcabi.aspects.Immutable;
-import com.jcabi.aspects.LogExceptions;
-import com.jcabi.aspects.Loggable;
-import com.jcabi.log.Logger;
-import org.apache.commons.io.IOUtils;
+import org.takes.rs.RsText;
+import org.takes.rs.RsWithStatus;
+import org.takes.rs.RsWrap;
 
-import java.io.*;
+import java.net.HttpURLConnection;
 
 /**
  * @author Kirill Chernyavskiy
  */
 @Immutable
-public final class GenBinary implements GenStream {
+public final class ErrMethodNotAllowed extends RsWrap {
 
-    @Override
-    @LogExceptions
-    public InputStream act(PlistValue source) throws IOException {
-        File tmp = File.createTempFile("genbinary-", ".plist");
-        try {
-            new BinaryPlistFile(tmp).write(source);
-            try (InputStream is = new FileInputStream(tmp)) {
-                return new ByteArrayInputStream(IOUtils.toByteArray(is));
-            }
-        } finally {
-            if (!tmp.delete()) {
-                Logger.warn(this, "Failed to delete temporary file");
-            }
-        }
+    public ErrMethodNotAllowed() {
+        super(
+            new RsWithStatus(
+                new RsText("Method not allowed"),
+                HttpURLConnection.HTTP_BAD_METHOD
+            )
+        );
     }
 }

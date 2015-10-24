@@ -1,8 +1,8 @@
 package com.gs.plistconv.proc;
 
+import com.gs.plistconv.rq.RqFakeBody;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,7 +27,9 @@ public class PcPlXmlTest {
     public void actWithValidPlistProcessAsPlistValue() throws IOException {
         assertThat(
             new PcPlXml().act(
-                new ByteArrayInputStream(VALID_TARGET.getBytes())
+                new RqFakeBody(
+                    VALID_TARGET.getBytes()
+                )
             ).dictionary().get("_bool_false").bool(),
             is(false)
         );
@@ -35,6 +37,10 @@ public class PcPlXmlTest {
 
     @Test(expected = IOException.class)
     public void actWithCorruptedDataThrowsException() throws IOException {
-        new PcPlXml().act(new ByteArrayInputStream(new byte[]{2, 6, 1, 36, 14, 11}));
+        new PcPlXml().act(
+            new RqFakeBody(
+                new byte[]{2, 6, 1, 36, 14, 11}
+            )
+        );
     }
 }

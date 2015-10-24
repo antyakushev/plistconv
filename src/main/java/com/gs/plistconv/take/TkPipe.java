@@ -16,41 +16,50 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.gs.plistconv.proc;
+package com.gs.plistconv.take;
 
-import com.gs.plist4j.PlistException;
-import com.gs.plist4j.primitives.PlistValue;
-import com.gs.plist4j.xml.XmlPlistFile;
+import com.gs.plistconv.gen.GenStream;
+import com.gs.plistconv.proc.PcRequest;
 import com.jcabi.aspects.Immutable;
-import com.jcabi.aspects.LogExceptions;
-import com.jcabi.log.Logger;
 import org.takes.Request;
-import org.takes.rq.RqPrint;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.rs.RsWithBody;
+import org.takes.rs.RsWithStatus;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * @author Kirill Chernyavskiy
  */
 @Immutable
-public final class PcPlXml implements PcRequest {
+public final class TkPipe implements Take {
+
+    private final PcRequest process;
+    private final GenStream generate;
+
+    public TkPipe(@NotNull PcRequest process, @NotNull GenStream generate) {
+        this.process = process;
+        this.generate = generate;
+    }
 
     @Override
-    @LogExceptions
-    public PlistValue act(Request request) throws IOException {
-        File tmp = File.createTempFile("pcplxml-", ".plist");
+    public Response act(Request req) throws IOException {
         try {
-            try (OutputStream os = new FileOutputStream(tmp)) {
-                new RqPrint(request).printBody(os);
-            }
-            return new XmlPlistFile(tmp).read();
-        } finally {
-            if (!tmp.delete()) {
-                Logger.warn(this, "Failed to delete temporary file");
-            }
+            return new RsWithStatus(
+                new RsWithBody(
+                    generate.act(
+                        process.act(
+                            req
+                        )
+                    )
+                ),
+                200
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 }

@@ -4,13 +4,13 @@ version '1.0-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = "com.gs.plistconv.App"
 
 repositories {
     mavenCentral()
 }
 
 run {
+    mainClassName = "com.gs.plistconv.App"
     args "--port=8080 --refresh".split()
 }
 
@@ -25,6 +25,15 @@ dependencies {
     compile 'org.slf4j:slf4j-log4j12:1.7.12'
     compile 'com.jcabi:jcabi-log:0.17'
 
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile 'junit:junit:4.11'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
+    testCompile 'com.jcabi:jcabi-http:1.14'
+    testCompile 'com.sun.jersey:jersey-core:1.18.1' //jcabi-http need
+    testCompile 'javax.json:javax.json-api:1.0'     //jcabi-http need
+    testCompile 'org.glassfish:javax.json:1.0.4'    //jcabi-http need
+    testCompile 'com.sun.grizzly:grizzly-servlet-webserver:1.9.59' //jcabi-http test need
+    testCompile 'com.sun.jersey:jersey-client:1.18.1' //jcabi-http test need
+    testCompile 'com.sun.jersey:jersey-core:1.18.1' //jcabi-http test need
+    testCompile 'com.sun.jersey:jersey-server:1.18.1' //jcabi-http test need
+    testCompile 'com.google.guava:guava:19.0-rc2'
 }

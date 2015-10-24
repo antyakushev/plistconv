@@ -1,9 +1,9 @@
 package com.gs.plistconv.proc;
 
 import com.gs.plist4j.primitives.PlistValue;
+import com.gs.plistconv.rq.RqFakeBody;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
@@ -26,9 +26,7 @@ public class PcBinaryTest {
 
     private static PlistValue readViaProc(byte[] data) throws IOException {
         return new PcBinary().act(
-            new ByteArrayInputStream(
-                Base64.getDecoder().decode(data)
-            )
+            new RqFakeBody(Base64.getDecoder().decode(data))
         );
     }
 

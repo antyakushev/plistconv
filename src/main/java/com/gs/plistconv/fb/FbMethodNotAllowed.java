@@ -16,38 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.gs.plistconv.gen;
+package com.gs.plistconv.fb;
 
-import com.gs.plist4j.PlistException;
-import com.gs.plist4j.binary.BinaryPlistFile;
-import com.gs.plist4j.primitives.PlistValue;
 import com.jcabi.aspects.Immutable;
-import com.jcabi.aspects.LogExceptions;
-import com.jcabi.aspects.Loggable;
-import com.jcabi.log.Logger;
-import org.apache.commons.io.IOUtils;
+import org.takes.facets.fallback.Fallback;
+import org.takes.facets.fallback.FbWrap;
+import org.takes.misc.Opt;
+import org.takes.rq.RqMethod;
 
-import java.io.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author Kirill Chernyavskiy
  */
 @Immutable
-public final class GenBinary implements GenStream {
+public final class FbMethodNotAllowed extends FbWrap {
 
-    @Override
-    @LogExceptions
-    public InputStream act(PlistValue source) throws IOException {
-        File tmp = File.createTempFile("genbinary-", ".plist");
-        try {
-            new BinaryPlistFile(tmp).write(source);
-            try (InputStream is = new FileInputStream(tmp)) {
-                return new ByteArrayInputStream(IOUtils.toByteArray(is));
+    public FbMethodNotAllowed(final Fallback fb, final String... allowed) {
+        this(fb, Collections.unmodifiableCollection(Arrays.asList(allowed)));
+    }
+
+    public FbMethodNotAllowed(final Fallback fb, final Collection<String> allowed) {
+        super(
+            req -> {
+                if (!allowed.contains(new RqMethod.Base(req).method())) {
+                    return fb.route(req);
+                } else {
+                    return new Opt.Empty<>();
+                }
             }
-        } finally {
-            if (!tmp.delete()) {
-                Logger.warn(this, "Failed to delete temporary file");
-            }
-        }
+        );
     }
 }

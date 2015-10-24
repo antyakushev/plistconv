@@ -22,21 +22,28 @@ import com.jcabi.aspects.Immutable;
 import org.takes.Take;
 import org.takes.facets.fork.FkParams;
 import org.takes.facets.fork.FkWrap;
+import org.takes.facets.fork.TkFork;
 
 import javax.validation.constraints.NotNull;
-import java.util.regex.Pattern;
 
 /**
  * @author Kirill Chernyavskiy
  */
 @Immutable
-public final class FkOut extends FkWrap {
-    public FkOut(@NotNull Pattern pattern, @NotNull Take take) {
+public final class FkInOut extends FkWrap {
+
+    public FkInOut(@NotNull String inp, @NotNull String out, @NotNull Take take) {
         super(
             new FkParams(
-                "out",
-                pattern,
-                take
+                "inp",
+                inp,
+                new TkFork(
+                    new FkParams(
+                        "out",
+                        out,
+                        take
+                    )
+                )
             )
         );
     }

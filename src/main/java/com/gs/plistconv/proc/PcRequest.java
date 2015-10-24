@@ -18,39 +18,14 @@
  */
 package com.gs.plistconv.proc;
 
-import com.gs.plist4j.PlistException;
 import com.gs.plist4j.primitives.PlistValue;
-import com.gs.plist4j.xml.XmlPlistFile;
-import com.jcabi.aspects.Immutable;
-import com.jcabi.aspects.LogExceptions;
-import com.jcabi.log.Logger;
 import org.takes.Request;
-import org.takes.rq.RqPrint;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * @author Kirill Chernyavskiy
  */
-@Immutable
-public final class PcPlXml implements PcRequest {
-
-    @Override
-    @LogExceptions
-    public PlistValue act(Request request) throws IOException {
-        File tmp = File.createTempFile("pcplxml-", ".plist");
-        try {
-            try (OutputStream os = new FileOutputStream(tmp)) {
-                new RqPrint(request).printBody(os);
-            }
-            return new XmlPlistFile(tmp).read();
-        } finally {
-            if (!tmp.delete()) {
-                Logger.warn(this, "Failed to delete temporary file");
-            }
-        }
-    }
+public interface PcRequest {
+    PlistValue act(Request request) throws IOException;
 }

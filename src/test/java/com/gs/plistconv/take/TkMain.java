@@ -18,43 +18,41 @@
  */
 package com.gs.plistconv.take;
 
-import com.gs.plistconv.gen.GenStream;
-import com.gs.plistconv.proc.PcStream;
-import com.jcabi.aspects.Immutable;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.rs.RsWithBody;
+import org.takes.facets.fallback.TkFallback;
+import org.takes.facets.fork.FkRegex;
+import org.takes.facets.fork.TkFork;
+import org.takes.misc.Opt;
+import org.takes.rq.RqHref;
+import org.takes.rs.RsText;
 import org.takes.rs.RsWithStatus;
-
-import javax.validation.constraints.NotNull;
-import java.io.IOException;
+import org.takes.tk.TkWrap;
 
 /**
  * @author Kirill Chernyavskiy
  */
-@Immutable
-public final class TkConv implements Take {
+final class TkMain extends TkWrap {
 
-    private final PcStream process;
-    private final GenStream generate;
-
-    public TkConv(@NotNull PcStream process, @NotNull GenStream generate) {
-        this.process = process;
-        this.generate = generate;
-    }
-
-    @Override
-    public Response act(Request req) throws IOException {
-        return new RsWithStatus(
-            new RsWithBody(
-                generate.act(
-                    process.act(
-                        req.body()
+    public TkMain() {
+        super(
+            new TkFallback(
+                new TkFork(
+                    new FkRegex(
+                        "^/convert",
+                        new TkConvert()
+                    )
+                ),
+                fail -> new Opt.Single<>(
+                    new RsWithStatus(
+                        new RsText(
+                            String.format(
+                                "'%s' not found",
+                                new RqHref.Base(fail).href().path()
+                            )
+                        ),
+                        404
                     )
                 )
-            ),
-            200
+            )
         );
     }
 }

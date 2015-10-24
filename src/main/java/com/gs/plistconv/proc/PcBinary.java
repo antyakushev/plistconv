@@ -18,28 +18,33 @@
  */
 package com.gs.plistconv.proc;
 
+import com.gs.plist4j.PlistException;
 import com.gs.plist4j.binary.BinaryPlistFile;
 import com.gs.plist4j.primitives.PlistValue;
 import com.jcabi.aspects.Immutable;
 import com.jcabi.aspects.LogExceptions;
 import com.jcabi.log.Logger;
-import org.apache.commons.io.IOUtils;
+import org.takes.Request;
+import org.takes.rq.RqPrint;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * @author Kirill Chernyavskiy
  */
 @Immutable
-public final class PcBinary implements PcStream {
+public final class PcBinary implements PcRequest {
 
     @Override
     @LogExceptions
-    public PlistValue act(InputStream stream) throws IOException {
+    public PlistValue act(Request request) throws IOException {
         File tmp = File.createTempFile("pcbinary-", ".plist");
         try {
             try (OutputStream os = new FileOutputStream(tmp)) {
-                IOUtils.copy(stream, os);
+                new RqPrint(request).printBody(os);
             }
             return new BinaryPlistFile(tmp).read();
         } finally {

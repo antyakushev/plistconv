@@ -16,16 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.gs.plistconv.proc;
+package com.gs.plistconv.err;
 
-import com.gs.plist4j.primitives.PlistValue;
+import com.jcabi.aspects.Immutable;
+import org.takes.rs.RsText;
+import org.takes.rs.RsWithStatus;
+import org.takes.rs.RsWrap;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.net.HttpURLConnection;
 
 /**
  * @author Kirill Chernyavskiy
  */
-public interface PcStream {
-    PlistValue act(InputStream stream) throws IOException;
+@Immutable
+public final class ErrUnsupportedType extends RsWrap {
+
+    public ErrUnsupportedType() {
+        super(
+            new RsWithStatus(
+                new RsText("Unsupported type"),
+                HttpURLConnection.HTTP_UNSUPPORTED_TYPE
+            )
+        );
+    }
 }

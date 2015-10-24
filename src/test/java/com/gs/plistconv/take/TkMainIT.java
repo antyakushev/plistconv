@@ -16,28 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.gs.plistconv.fork;
+package com.gs.plistconv.take;
 
-import com.jcabi.aspects.Immutable;
-import org.takes.Take;
-import org.takes.facets.fork.FkParams;
-import org.takes.facets.fork.FkWrap;
+import com.gs.plist4j.binary.BinaryPlistFile;
+import com.gs.plist4j.primitives.PlistPrimitive;
+import com.gs.plist4j.primitives.PlistValue;
+import com.gs.plist4j.xml.XmlPlistFile;
+import com.jcabi.http.request.JdkRequest;
+import com.jcabi.http.response.RestResponse;
+import org.apache.commons.io.IOUtils;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.takes.http.FtRemote;
 
-import javax.validation.constraints.NotNull;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.util.HashMap;
 
 /**
  * @author Kirill Chernyavskiy
  */
-@Immutable
-public final class FkInp extends FkWrap {
-    public FkInp(@NotNull Pattern pattern, @NotNull Take take) {
-        super(
-            new FkParams(
-                "inp",
-                pattern,
-                take
-            )
-        );
-    }
+public final class TkMainIT {
+
+
 }
