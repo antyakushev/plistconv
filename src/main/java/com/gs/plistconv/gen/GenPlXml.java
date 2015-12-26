@@ -19,13 +19,14 @@
 package com.gs.plistconv.gen;
 
 import com.gs.plist4j.primitives.PlistValue;
-import com.gs.plist4j.xml.XmlPlistFile;
+import com.gs.plist4j.xml.XmlPlistOutput;
 import com.jcabi.aspects.Immutable;
 import com.jcabi.aspects.LogExceptions;
-import com.jcabi.log.Logger;
-import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 
 /**
  * @author Kirill Chernyavskiy
@@ -36,16 +37,8 @@ public final class GenPlXml implements GenStream {
     @Override
     @LogExceptions
     public InputStream act(PlistValue source) throws IOException {
-        File tmp = File.createTempFile("genxml-", ".plist");
-        try {
-            new XmlPlistFile(tmp).write(source);
-            try (InputStream is = new FileInputStream(tmp)) {
-                return new ByteArrayInputStream(IOUtils.toByteArray(is));
-            }
-        } finally {
-            if (!tmp.delete()) {
-                Logger.warn(this, "Failed to delete temporary file");
-            }
-        }
+        PipedInputStream stream = new PipedInputStream();
+        new XmlPlistOutput(new PipedOutputStream(stream)).write(source);
+        return stream;
     }
 }

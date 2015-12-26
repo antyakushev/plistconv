@@ -18,23 +18,6 @@
  */
 package com.gs.plistconv.take;
 
-import com.gs.plist4j.binary.BinaryPlistFile;
-import com.gs.plist4j.primitives.PlistPrimitive;
-import com.gs.plist4j.primitives.PlistValue;
-import com.gs.plist4j.xml.XmlPlistFile;
-import com.jcabi.http.request.JdkRequest;
-import com.jcabi.http.response.RestResponse;
-import org.apache.commons.io.IOUtils;
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.takes.http.FtRemote;
-
-import java.io.*;
-import java.util.HashMap;
-
 /**
  * @author Kirill Chernyavskiy
  */
