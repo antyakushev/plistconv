@@ -26,7 +26,7 @@ public class PcBinaryTest {
 
     private static PlistValue readViaProc(byte[] data) throws IOException {
         return new PcBinary().act(
-            new RqFakeBody(Base64.getDecoder().decode(data))
+            new RqFakeBody(Base64.getDecoder().decode(data)).body()
         );
     }
 

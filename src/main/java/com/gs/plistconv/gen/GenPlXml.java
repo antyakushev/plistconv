@@ -23,10 +23,10 @@ import com.gs.plist4j.xml.XmlPlistOutput;
 import com.jcabi.aspects.Immutable;
 import com.jcabi.aspects.LogExceptions;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 
 /**
  * @author Kirill Chernyavskiy
@@ -37,8 +37,13 @@ public final class GenPlXml implements GenStream {
     @Override
     @LogExceptions
     public InputStream act(PlistValue source) throws IOException {
-        PipedInputStream stream = new PipedInputStream();
-        new XmlPlistOutput(new PipedOutputStream(stream)).write(source);
-        return stream;
+        //TODO: why PipedOutputStream and PipedInputStream are not working??!
+//        PipedInputStream input = new PipedInputStream();
+//        try (PipedOutputStream output = new PipedOutputStream(input)) {
+        ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+        new XmlPlistOutput(tmp).write(source);
+        return new ByteArrayInputStream(tmp.toByteArray());
+//        }
+//        return input;
     }
 }

@@ -37,8 +37,10 @@ public final class GenBinary implements GenStream {
     @Override
     @LogExceptions
     public InputStream act(PlistValue source) throws IOException {
-        PipedInputStream stream = new PipedInputStream();
-        new BinaryPlistOutput(new PipedOutputStream(stream)).write(source);
-        return stream;
+        PipedInputStream input = new PipedInputStream();
+        try (PipedOutputStream output = new PipedOutputStream(input)) {
+            new BinaryPlistOutput(output).write(source);
+        }
+        return input;
     }
 }

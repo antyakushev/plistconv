@@ -21,14 +21,17 @@ package com.gs.plistconv.take;
 import com.gs.plistconv.gen.GenStream;
 import com.gs.plistconv.proc.PcRequest;
 import com.jcabi.aspects.Immutable;
+import org.apache.commons.io.IOUtils;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rq.RqLengthAware;
+import org.takes.rq.RqPrint;
 import org.takes.rs.RsWithBody;
 import org.takes.rs.RsWithStatus;
 
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author Kirill Chernyavskiy
@@ -51,7 +54,9 @@ public final class TkPipe implements Take {
                 new RsWithBody(
                     generate.act(
                         process.act(
-                            req
+                            new BufferedInputStream(
+                                new RqLengthAware(req).body()
+                            )
                         )
                     )
                 ),

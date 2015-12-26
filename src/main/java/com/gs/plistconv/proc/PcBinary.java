@@ -22,9 +22,9 @@ import com.gs.plist4j.binary.BinaryPlistInput;
 import com.gs.plist4j.primitives.PlistValue;
 import com.jcabi.aspects.Immutable;
 import com.jcabi.aspects.LogExceptions;
-import org.takes.Request;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Kirill Chernyavskiy
@@ -34,8 +34,10 @@ public final class PcBinary implements PcRequest {
 
     @Override
     @LogExceptions
-    public PlistValue act(Request request) throws IOException {
-        try (BinaryPlistInput input = new BinaryPlistInput(request.body())) {
+    public PlistValue act(InputStream stream) throws IOException {
+        try (
+            BinaryPlistInput input = new BinaryPlistInput(stream)
+        ) {
             return input.read();
         } catch (Exception e) {
             throw new IOException("Failed to read plist value", e);

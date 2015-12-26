@@ -25,6 +25,7 @@ import com.jcabi.aspects.LogExceptions;
 import org.takes.Request;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Kirill Chernyavskiy
@@ -34,8 +35,8 @@ public final class PcPlXml implements PcRequest {
 
     @Override
     @LogExceptions
-    public PlistValue act(Request request) throws IOException {
-        try (XmlPlistInput input = new XmlPlistInput(request.body())) {
+    public PlistValue act(InputStream stream) throws IOException {
+        try (XmlPlistInput input = new XmlPlistInput(stream)) {
             return input.read();
         }
     }

@@ -29,7 +29,7 @@ public class PcPlXmlTest {
             new PcPlXml().act(
                 new RqFakeBody(
                     VALID_TARGET.getBytes()
-                )
+                ).body()
             ).dictionary().get("_bool_false").bool(),
             is(false)
         );
@@ -40,7 +40,7 @@ public class PcPlXmlTest {
         new PcPlXml().act(
             new RqFakeBody(
                 new byte[]{2, 6, 1, 36, 14, 11}
-            )
+            ).body()
         );
     }
 }

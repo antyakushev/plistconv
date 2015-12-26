@@ -19,13 +19,13 @@
 package com.gs.plistconv.proc;
 
 import com.gs.plist4j.primitives.PlistValue;
-import org.takes.Request;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Kirill Chernyavskiy
  */
 public interface PcRequest {
-    PlistValue act(Request request) throws IOException;
+    PlistValue act(InputStream stream) throws IOException;
 }
